@@ -38,7 +38,7 @@ TeamTable.swift
 
 import SwiftKuery
 import Fluent
-final class TeamTable: BaseTable {
+final class TeamTable: Table {
     let tableName = "teams"
     
     let name = Column("name", Varchar.self, length: 256)
