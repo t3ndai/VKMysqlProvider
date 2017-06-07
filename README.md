@@ -25,3 +25,43 @@ kuery-mysql.json
 }
 ```
 More info about Kuery and connection pools at: https://github.com/IBM-Swift/SwiftKueryMySQL
+
+
+
+
+### Tip:
+- You will need to keep a Fluent `Model` and a Kuery `Table` class. To make it easier to remember of update both classes you can put in the same file the Kuery `Table` class and the `Preparation` extension of your Fluent `Model`.
+
+Ex:
+TeamTable.swift
+``` swift
+
+import SwiftKuery
+import Fluent
+final class TeamTable: BaseTable {
+    let tableName = "teams"
+    
+    let name = Column("name", Varchar.self, length: 256)
+    let companyName = Column("company_name", Varchar.self, length: 256)
+    let division = Column("division", Varchar.self, length: 256)
+    let timezone = Column("timezone", Varchar.self, length: 100, defaultValue: "America/Sao_Paulo")
+    
+}
+
+extension Team: Preparation {
+    static func prepare(_ database: Database) throws {
+        try database.create(self) { builder in
+            builder.id()
+            builder.string("name", length: 256, unique: true)
+            builder.string("company_name", length: 256)
+            builder.string("division", length: 256)
+            builder.string("timezone", length: 100, default: "America/Sao_Paulo")
+        }
+    }
+    
+    static func revert(_ database: Database) throws {
+        try database.delete(self)
+    }
+}
+
+```
