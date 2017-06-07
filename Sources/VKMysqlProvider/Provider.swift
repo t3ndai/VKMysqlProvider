@@ -8,9 +8,7 @@ public final class Provider: Vapor.Provider {
     let connectionPool: SwiftKuery.ConnectionPool?
     
     public init(config: Config) throws {
-        guard self.connectionPool = try ConnectionPoolCreator(config: config).connectionPool else{
-            throw VKError.connectionPoolCreatorFail
-        }
+        self.connectionPool = try ConnectionPoolCreator(config: config).connectionPool
     }
     
     public func boot(_ config: Config) throws {

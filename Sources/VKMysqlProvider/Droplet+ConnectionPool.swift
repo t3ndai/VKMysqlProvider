@@ -1,15 +1,21 @@
 import Vapor
 import SwiftKuery
 
+private let SwiftKueryConnectionPoolKey = "SwiftKuery.ConnectionPool"
+
 extension Droplet {
-    public var connectionPool: SwiftKuery.ConnectionPool? {
+    
+    public internal(set) var connectionPool: SwiftKuery.ConnectionPool? {
         
-        get{
-            guard let pool = self.storage["SwiftKuery.ConnectionPool"] as? ConnectionPool else {
-                throw VKError.noConnectionPoolCreated
-            }
-            return pool
+        get{ return  self.storage[SwiftKueryConnectionPoolKey] as? SwiftKuery.ConnectionPool }
+        set{ self.storage[SwiftKueryConnectionPoolKey] = newValue }
+    }
+    
+    public func assertConnectionPool() throws -> SwiftKuery.ConnectionPool {
+        guard let connectionPool = self.connectionPool else {
+            throw VKError.noConnectionPoolCreated
         }
-        set{ self.storage["SwiftKuery.ConnectionPool"] = newValue}
+        
+        return connectionPool
     }
 }
